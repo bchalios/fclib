@@ -1,2 +1,5 @@
 /target
 /Cargo.lock
+
+# Keep in here files for testing
+/share
