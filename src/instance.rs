@@ -55,24 +55,29 @@ impl FcVmmBuilder {
         }
     }
 
-    pub fn with_config<P: AsRef<Path>>(&mut self, config: P) {
+    pub fn with_config<P: AsRef<Path>>(mut self, config: P) -> Self {
         self.config = Some(config.as_ref().to_path_buf());
+        self
     }
 
-    pub fn with_vm_id<S: Into<String>>(&mut self, id: S) {
+    pub fn with_vm_id<S: Into<String>>(mut self, id: S) -> Self {
         self.vm_id = Some(id.into());
+        self
     }
 
-    pub fn disable_seccomp(&mut self) {
+    pub fn disable_seccomp(mut self) -> Self {
         self.disable_seccomp = true;
+        self
     }
 
-    pub fn with_log_path<P: AsRef<Path>>(&mut self, log_path: P) {
+    pub fn with_log_path<P: AsRef<Path>>(mut self, log_path: P) -> Self {
         self.log_path = Some(log_path.as_ref().to_path_buf());
+        self
     }
 
-    pub fn with_log_level(&mut self, level: LogLevel) {
+    pub fn with_log_level(mut self, level: LogLevel) -> Self {
         self.log_level = level;
+        self
     }
 
     pub fn start_vmm(self) -> Result<FcVmm, std::io::Error> {
@@ -117,11 +122,12 @@ pub struct FcVmm {
 }
 
 impl FcVmm {
-    pub fn builder<P: AsRef<Path>>(fc_path: P, api_socket: P) -> FcVmmBuilder {
-        FcVmmBuilder::new(
-            fc_path.as_ref().to_path_buf(),
-            api_socket.as_ref().to_path_buf(),
-        )
+    pub fn builder<F, A>(fc_path: F, api_socket: A) -> FcVmmBuilder
+    where
+        F: AsRef<Path>,
+        A: AsRef<Path>,
+    {
+        FcVmmBuilder::new(fc_path.as_ref().to_path_buf(), api_socket)
     }
 
     pub fn pid(&self) -> u32 {
