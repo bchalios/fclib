@@ -4,6 +4,7 @@ use hyper::body::Buf;
 use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use hyper::{Body, Client, Request};
 use hyperlocal::{UnixClientExt, UnixConnector, Uri};
+use log::debug;
 use serde::de::DeserializeOwned;
 
 use super::models::*;
@@ -46,7 +47,7 @@ impl ApiClient {
     {
         let serialized = serde_json::to_string(&body)?;
         let uri = self.uri(endpoint);
-        println!("Performing put to {uri:?}");
+        debug!("PUT @ {endpoint}");
 
         let request = Request::put(uri)
             .header(CONTENT_TYPE, "json")
@@ -72,7 +73,7 @@ impl ApiClient {
     {
         let serialized = serde_json::to_string(&body)?;
         let uri = self.uri(endpoint);
-        println!("Performing put to {uri:?}");
+        debug!("PATCH @ {endpoint}");
 
         let request = Request::patch(uri)
             .header(CONTENT_TYPE, "json")
@@ -96,6 +97,7 @@ impl ApiClient {
     where
         T: DeserializeOwned,
     {
+        debug!("GET @ {endpoint}");
         let uri = self.uri(endpoint);
         let request = Request::get(uri).body(Body::default()).unwrap();
 
@@ -117,7 +119,7 @@ impl ApiClient {
     }
 
     pub async fn describe_balloon_config(&self) -> Result<Balloon> {
-        self.get("/ballon").await
+        self.get("/balloon").await
     }
 
     pub async fn describe_balloon_stats(&self) -> Result<BalloonStats> {
