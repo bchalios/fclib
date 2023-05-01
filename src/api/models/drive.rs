@@ -10,13 +10,27 @@ use super::RateLimiter;
 
 use serde_derive::{Deserialize, Serialize};
 
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub enum CacheType {
+    #[default]
+    Unsafe,
+    WriteBack,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub enum IoEngine {
+    #[default]
+    Sync,
+    Async,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Drive {
     #[serde(rename = "drive_id")]
     drive_id: String,
     /// Represents the caching strategy for the block device.
     #[serde(rename = "cache_type")]
-    cache_type: Option<String>,
+    cache_type: CacheType,
     #[serde(rename = "is_read_only")]
     is_read_only: bool,
     #[serde(rename = "is_root_device")]
@@ -24,7 +38,7 @@ pub struct Drive {
     /// Represents the unique id of the boot partition of this device. It is optional and it will
     /// be taken into account only if the is_root_device field is true.
     #[serde(rename = "partuuid")]
-    partuuid: Option<String>,
+    partuuid: String,
     /// Host level path for the guest drive
     #[serde(rename = "path_on_host")]
     path_on_host: String,
@@ -33,7 +47,7 @@ pub struct Drive {
     /// Type of the IO engine used by the device. \"Async\" is supported on host kernels newer than
     /// 5.10.51.
     #[serde(rename = "io_engine")]
-    io_engine: Option<String>,
+    io_engine: IoEngine,
 }
 
 impl Drive {
@@ -45,13 +59,13 @@ impl Drive {
     ) -> Drive {
         Drive {
             drive_id,
-            cache_type: None,
+            cache_type: CacheType::default(),
             is_read_only,
             is_root_device,
-            partuuid: None,
+            partuuid: String::new(),
             path_on_host,
             rate_limiter: None,
-            io_engine: None,
+            io_engine: IoEngine::default(),
         }
     }
 
@@ -68,21 +82,21 @@ impl Drive {
         &self.drive_id
     }
 
-    pub fn set_cache_type(&mut self, cache_type: String) {
-        self.cache_type = Some(cache_type);
+    pub fn set_cache_type(&mut self, cache_type: CacheType) {
+        self.cache_type = cache_type;
     }
 
-    pub fn with_cache_type(mut self, cache_type: String) -> Drive {
-        self.cache_type = Some(cache_type);
+    pub fn with_cache_type(mut self, cache_type: CacheType) -> Drive {
+        self.cache_type = cache_type;
         self
     }
 
-    pub fn cache_type(&self) -> Option<&String> {
-        self.cache_type.as_ref()
+    pub fn cache_type(&self) -> &CacheType {
+        &self.cache_type
     }
 
     pub fn reset_cache_type(&mut self) {
-        self.cache_type = None;
+        self.cache_type = CacheType::default();
     }
 
     pub fn set_is_read_only(&mut self, is_read_only: bool) {
@@ -112,20 +126,20 @@ impl Drive {
     }
 
     pub fn set_partuuid(&mut self, partuuid: String) {
-        self.partuuid = Some(partuuid);
+        self.partuuid = partuuid;
     }
 
     pub fn with_partuuid(mut self, partuuid: String) -> Drive {
-        self.partuuid = Some(partuuid);
+        self.partuuid = partuuid;
         self
     }
 
-    pub fn partuuid(&self) -> Option<&String> {
-        self.partuuid.as_ref()
+    pub fn partuuid(&self) -> &String {
+        &self.partuuid
     }
 
     pub fn reset_partuuid(&mut self) {
-        self.partuuid = None;
+        self.partuuid = String::new();
     }
 
     pub fn set_path_on_host(&mut self, path_on_host: String) {
@@ -158,20 +172,20 @@ impl Drive {
         self.rate_limiter = None;
     }
 
-    pub fn set_io_engine(&mut self, io_engine: String) {
-        self.io_engine = Some(io_engine);
+    pub fn set_io_engine(&mut self, io_engine: IoEngine) {
+        self.io_engine = io_engine;
     }
 
-    pub fn with_io_engine(mut self, io_engine: String) -> Drive {
-        self.io_engine = Some(io_engine);
+    pub fn with_io_engine(mut self, io_engine: IoEngine) -> Drive {
+        self.io_engine = io_engine;
         self
     }
 
-    pub fn io_engine(&self) -> Option<&String> {
-        self.io_engine.as_ref()
+    pub fn io_engine(&self) -> &IoEngine {
+        &self.io_engine
     }
 
     pub fn reset_io_engine(&mut self) {
-        self.io_engine = None;
+        self.io_engine = IoEngine::default();
     }
 }

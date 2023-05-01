@@ -1,4 +1,5 @@
 pub mod api;
+pub mod drive;
 pub mod instance;
 pub mod kernel;
 
