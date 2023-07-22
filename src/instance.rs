@@ -1,5 +1,6 @@
+use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Child, Command};
+use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
@@ -80,7 +81,7 @@ impl FcVmmBuilder {
         self
     }
 
-    pub fn start_vmm(self) -> Result<FcVmm, std::io::Error> {
+    pub fn start_vmm(self) -> std::result::Result<FcVmm, std::io::Error> {
         let mut cmd = Command::new(self.fc_path);
         cmd.arg("--api-sock").arg(&self.api_sock);
 
@@ -101,7 +102,11 @@ impl FcVmmBuilder {
             cmd.arg("--level").arg(self.log_level.to_string());
         }
 
-        let vmm = cmd.spawn()?;
+        let vmm = cmd
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()?;
 
         // TODO: sleep to wait for the socket to be created. This should
         // be fixed!
@@ -109,7 +114,7 @@ impl FcVmmBuilder {
 
         Ok(FcVmm {
             vmm,
-            client: ApiClient::new(&self.api_sock),
+            api_sock: self.api_sock,
         })
     }
 }
@@ -118,7 +123,8 @@ impl FcVmmBuilder {
 pub struct FcVmm {
     // Firecracker VMM process
     vmm: Child,
-    pub(crate) client: ApiClient,
+    // Unix socket of the VMM
+    api_sock: PathBuf,
 }
 
 impl FcVmm {
@@ -132,6 +138,18 @@ impl FcVmm {
 
     pub fn pid(&self) -> u32 {
         self.vmm.id()
+    }
+
+    pub fn serial_in(&mut self, buf: &str) -> std::result::Result<(), std::io::Error> {
+        self.vmm.stdin.as_ref().unwrap().write_all(buf.as_bytes())
+    }
+
+    pub fn serial_out(&mut self, buf: &mut String) -> std::result::Result<usize, std::io::Error> {
+        self.vmm.stdout.as_mut().unwrap().read_to_string(buf)
+    }
+
+    pub fn api_client(&self) -> ApiClient {
+        ApiClient::new(&self.api_sock)
     }
 }
 

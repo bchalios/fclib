@@ -19,6 +19,7 @@ pub use self::firecracker_version::FirecrackerVersion;
 mod full_vm_configuration;
 pub use self::full_vm_configuration::FullVmConfiguration;
 mod instance_action_info;
+pub use self::instance_action_info::InstanceAction;
 pub use self::instance_action_info::InstanceActionInfo;
 mod instance_info;
 pub use self::instance_info::InstanceInfo;
