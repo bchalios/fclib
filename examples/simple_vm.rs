@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::time::Duration;
 
 use clap::Parser;
 use fclib::api::{BootSource, Drive};
@@ -41,12 +42,23 @@ async fn main() {
             return;
         }
     };
+    let mut client = vmm.api_client();
 
     println!("Firecracker PID: {}", vmm.pid());
 
-    let boot_source = BootSource::new(args.fc_path);
-    vmm.set_boot_source(boot_source).await;
+    let mut boot_source = BootSource::new(args.vmlinux_path);
+    boot_source.set_boot_args("console=ttyS0 reboot=k panic=1 pci=off".to_owned());
+    client.set_boot_source(boot_source).await.unwrap();
 
-    let drive = Drive::new("1".to_owned(), true, true, args.rootfs_path);
-    vmm.add_drive("1", drive).await;
+    let drive = Drive::new("rootfs".to_owned(), false, true, args.rootfs_path);
+    client.add_drive("rootfs", &drive).await.unwrap();
+
+    client.start_microvm().await.unwrap();
+
+    let mut stdout = String::new();
+    loop {
+        vmm.serial_out(&mut stdout).unwrap();
+        println!("{stdout}");
+        std::thread::sleep(Duration::from_secs(1));
+    }
 }

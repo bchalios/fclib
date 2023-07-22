@@ -1,5 +1,18 @@
+pub mod actions;
+pub mod balloon;
 pub mod client;
+pub mod drive;
+pub mod kernel;
+pub mod logger;
+pub mod machine_config;
+pub mod metrics;
+pub mod mmds;
 pub mod models;
+pub mod network;
+pub mod snapshot;
+pub mod vm;
+pub mod vm_state;
+pub mod vsock;
 
 pub use models::*;
 
@@ -29,3 +42,5 @@ impl std::fmt::Display for ApiError {
         )
     }
 }
+
+pub type Result<T> = std::result::Result<T, Error>;

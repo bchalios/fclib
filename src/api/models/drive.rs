@@ -38,7 +38,7 @@ pub struct Drive {
     /// Represents the unique id of the boot partition of this device. It is optional and it will
     /// be taken into account only if the is_root_device field is true.
     #[serde(rename = "partuuid")]
-    partuuid: String,
+    partuuid: Option<String>,
     /// Host level path for the guest drive
     #[serde(rename = "path_on_host")]
     path_on_host: String,
@@ -62,7 +62,7 @@ impl Drive {
             cache_type: CacheType::default(),
             is_read_only,
             is_root_device,
-            partuuid: String::new(),
+            partuuid: None,
             path_on_host,
             rate_limiter: None,
             io_engine: IoEngine::default(),
@@ -126,20 +126,20 @@ impl Drive {
     }
 
     pub fn set_partuuid(&mut self, partuuid: String) {
-        self.partuuid = partuuid;
+        self.partuuid = Some(partuuid);
     }
 
     pub fn with_partuuid(mut self, partuuid: String) -> Drive {
-        self.partuuid = partuuid;
+        self.partuuid = Some(partuuid);
         self
     }
 
-    pub fn partuuid(&self) -> &String {
-        &self.partuuid
+    pub fn partuuid(&self) -> Option<&String> {
+        self.partuuid.as_ref()
     }
 
     pub fn reset_partuuid(&mut self) {
-        self.partuuid = String::new();
+        self.partuuid = None;
     }
 
     pub fn set_path_on_host(&mut self, path_on_host: String) {
