@@ -8,6 +8,8 @@
 //! \"/path/to/host_vsock.sock_52\" for port number 52.
 use serde_derive::{Deserialize, Serialize};
 
+use super::{ApiClient, Result};
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Vsock {
     /// Guest Vsock CID
@@ -79,5 +81,11 @@ impl Vsock {
 
     pub fn reset_vsock_id(&mut self) {
         self.vsock_id = None;
+    }
+}
+
+impl ApiClient {
+    pub async fn config_vsock(&self, vsock: &Vsock) -> Result<()> {
+        self.put("/vsock", vsock).await
     }
 }

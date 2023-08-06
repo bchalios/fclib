@@ -1,9 +1,10 @@
-//! BootSource : Boot source descriptor.
-use serde_derive::{Deserialize, Serialize};
-
 #[cfg(feature = "clap")]
 use clap::Args;
+use serde_derive::{Deserialize, Serialize};
 
+use super::{ApiClient, Result};
+
+/// BootSource : Boot source descriptor.
 #[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BootSource {
@@ -75,5 +76,12 @@ impl BootSource {
 
     pub fn kernel_image_path(&self) -> &String {
         &self.kernel_image_path
+    }
+}
+
+impl ApiClient {
+    /// Setup the boot source of the VM.
+    pub async fn set_boot_source(&mut self, boot_source: &BootSource) -> Result<()> {
+        self.put("/boot-source", boot_source).await
     }
 }

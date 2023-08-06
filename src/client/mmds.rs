@@ -2,6 +2,8 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use super::{ApiClient, Result};
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MmdsConfig {
     /// Enumeration indicating the MMDS version to be configured.
@@ -74,5 +76,33 @@ impl MmdsConfig {
 
     pub fn reset_ipv4_address(&mut self) {
         self.ipv4_address = None;
+    }
+}
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct MmdsContentsObject {}
+
+impl MmdsContentsObject {
+    /// Describes the contents of MMDS in JSON format.
+    pub fn new() -> MmdsContentsObject {
+        MmdsContentsObject {}
+    }
+}
+
+impl ApiClient {
+    pub async fn mmds_contents(&self) -> Result<serde_json::Value> {
+        self.get("/mmds").await
+    }
+
+    pub async fn update_mmds(&self, body: &MmdsContentsObject) -> Result<()> {
+        self.patch("/mmds", body).await
+    }
+
+    pub async fn store_mmds(&self, body: &MmdsContentsObject) -> Result<()> {
+        self.put("/mmds", body).await
+    }
+
+    pub async fn configure_mmds(&self, config: &MmdsConfig) -> Result<()> {
+        self.put("/mmds/config", config).await
     }
 }

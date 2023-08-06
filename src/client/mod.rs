@@ -1,14 +1,53 @@
-use std::path::{Path, PathBuf};
+pub mod balloon;
+pub mod cpu_config;
+pub mod drive;
+pub mod entropy;
+pub mod error;
+pub mod kernel;
+pub mod logger;
+pub mod metrics;
+pub mod mmds;
+pub mod network;
+pub mod rate_limiter;
+pub mod snapshot;
+pub mod vm;
+pub mod vsock;
 
-use super::{ApiError, Error, Result};
 use hyper::body::Buf;
 use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use hyper::{Body, Client, Request};
 use hyperlocal::{UnixClientExt, UnixConnector, Uri};
 use log::debug;
 use serde::de::DeserializeOwned;
+use std::path::{Path, PathBuf};
 
-/// Describes a Client that can speak the Firecracker API on top of a Unix socket.
+use error::FcError;
+
+#[derive(Debug, thiserror::Error)]
+pub enum FcClientError {
+    #[error("Hyper error: {0}")]
+    Hyper(#[from] hyper::Error),
+    #[error("(De)serialization error: {0}")]
+    Serde(#[from] serde_json::Error),
+    #[error("API error: {0}")]
+    Firecracker(#[from] ApiError),
+}
+
+#[derive(Debug, thiserror::Error)]
+pub struct ApiError {
+    pub code: hyper::StatusCode,
+    pub content: FcError,
+}
+
+impl std::fmt::Display for ApiError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Error {}: {}", self.code, self.content)
+    }
+}
+
+pub type Result<T> = std::result::Result<T, FcClientError>;
+
+/// An HTTP client that can speak the Firecracker API on top of a Unix socket.
 #[derive(Debug)]
 pub struct ApiClient {
     /// Path to the Unix socket
@@ -57,8 +96,8 @@ impl ApiClient {
             Ok(())
         } else {
             let body = hyper::body::aggregate(resp).await?;
-            let content: super::models::Error = serde_json::from_reader(body.reader())?;
-            Err(Error::from(ApiError { code, content }))
+            let content: FcError = serde_json::from_reader(body.reader())?;
+            Err(FcClientError::from(ApiError { code, content }))
         }
     }
 
@@ -83,8 +122,8 @@ impl ApiClient {
             Ok(())
         } else {
             let body = hyper::body::aggregate(resp).await?;
-            let content: super::models::Error = serde_json::from_reader(body.reader())?;
-            Err(Error::from(ApiError { code, content }))
+            let content: FcError = serde_json::from_reader(body.reader())?;
+            Err(FcClientError::from(ApiError { code, content }))
         }
     }
 

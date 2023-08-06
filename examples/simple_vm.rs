@@ -2,8 +2,9 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use clap::Parser;
-use fclib::api::{BootSource, Drive};
-use fclib::FcVmm;
+use fclib::client::drive::Drive;
+use fclib::client::kernel::BootSource;
+use fclib::vmm::{LogLevel, Vmm};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -32,8 +33,8 @@ async fn main() {
         std::fs::remove_file(&api_socket).unwrap();
     }
 
-    let mut vmm = match FcVmm::builder(&args.fc_path, &api_socket)
-        .with_log_level(fclib::LogLevel::Debug)
+    let mut vmm = match Vmm::builder(&args.fc_path, &api_socket)
+        .with_log_level(LogLevel::Debug)
         .start_vmm()
     {
         Ok(vmm) => vmm,

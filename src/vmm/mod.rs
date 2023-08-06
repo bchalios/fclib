@@ -4,7 +4,7 @@ use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
-use crate::api::client::ApiClient;
+use crate::client::ApiClient;
 
 #[derive(Debug)]
 pub enum LogLevel {
@@ -26,7 +26,7 @@ impl std::fmt::Display for LogLevel {
 }
 
 #[derive(Debug)]
-pub struct FcVmmBuilder {
+pub struct VmmBuilder {
     // Path to Firecracker binary
     fc_path: PathBuf,
     // Path to API socket
@@ -43,9 +43,9 @@ pub struct FcVmmBuilder {
     log_level: LogLevel,
 }
 
-impl FcVmmBuilder {
+impl VmmBuilder {
     fn new<P: AsRef<Path>>(fc_path: PathBuf, api_socket: P) -> Self {
-        FcVmmBuilder {
+        VmmBuilder {
             fc_path,
             api_sock: api_socket.as_ref().to_path_buf(),
             config: None,
@@ -81,7 +81,7 @@ impl FcVmmBuilder {
         self
     }
 
-    pub fn start_vmm(self) -> std::result::Result<FcVmm, std::io::Error> {
+    pub fn start_vmm(self) -> std::result::Result<Vmm, std::io::Error> {
         let mut cmd = Command::new(self.fc_path);
         cmd.arg("--api-sock").arg(&self.api_sock);
 
@@ -112,7 +112,7 @@ impl FcVmmBuilder {
         // be fixed!
         thread::sleep(Duration::from_millis(100));
 
-        Ok(FcVmm {
+        Ok(Vmm {
             vmm,
             api_sock: self.api_sock,
         })
@@ -120,20 +120,20 @@ impl FcVmmBuilder {
 }
 
 #[derive(Debug)]
-pub struct FcVmm {
+pub struct Vmm {
     // Firecracker VMM process
     vmm: Child,
     // Unix socket of the VMM
     api_sock: PathBuf,
 }
 
-impl FcVmm {
-    pub fn builder<F, A>(fc_path: F, api_socket: A) -> FcVmmBuilder
+impl Vmm {
+    pub fn builder<F, A>(fc_path: F, api_socket: A) -> VmmBuilder
     where
         F: AsRef<Path>,
         A: AsRef<Path>,
     {
-        FcVmmBuilder::new(fc_path.as_ref().to_path_buf(), api_socket)
+        VmmBuilder::new(fc_path.as_ref().to_path_buf(), api_socket)
     }
 
     pub fn pid(&self) -> u32 {
@@ -153,7 +153,7 @@ impl FcVmm {
     }
 }
 
-impl Drop for FcVmm {
+impl Drop for Vmm {
     fn drop(&mut self) {
         let _ = self.vmm.kill();
     }

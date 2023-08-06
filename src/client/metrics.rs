@@ -2,6 +2,8 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use super::{ApiClient, Result};
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Metrics {
     /// Path to the named pipe or file where the JSON-formatted metrics are flushed.
@@ -26,5 +28,11 @@ impl Metrics {
 
     pub fn metrics_path(&self) -> &String {
         &self.metrics_path
+    }
+}
+
+impl ApiClient {
+    pub async fn config_metrics(&self, logger: &Metrics) -> Result<()> {
+        self.put("/metrics", logger).await
     }
 }

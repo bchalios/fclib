@@ -1,10 +1,9 @@
-//! NetworkInterface : Defines a network interface.
-
-use crate::api::RateLimiter;
-
 #[cfg(feature = "clap")]
 use clap::Args;
 use serde_derive::{Deserialize, Serialize};
+
+use super::rate_limiter::RateLimiter;
+use super::{ApiClient, Result};
 
 /// Configuration of a microVM network interface
 #[cfg_attr(feature = "clap", derive(Args))]
@@ -117,5 +116,101 @@ impl NetworkInterface {
 
     pub fn reset_tx_rate_limiter(&mut self) {
         self.tx_rate_limiter = None;
+    }
+}
+
+/// Defines a partial network interface structure, used to update the
+/// rate limiters for that interface, after microvm start.
+#[cfg_attr(feature = "clap", derive(Args))]
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PartialNetworkInterface {
+    #[serde(rename = "iface_id")]
+    iface_id: String,
+    #[cfg_attr(feature = "clap", clap(skip))]
+    #[serde(rename = "rx_rate_limiter")]
+    rx_rate_limiter: Option<RateLimiter>,
+    #[cfg_attr(feature = "clap", clap(skip))]
+    #[serde(rename = "tx_rate_limiter")]
+    tx_rate_limiter: Option<RateLimiter>,
+}
+
+impl PartialNetworkInterface {
+    /// Defines a partial network interface structure, used to update the rate limiters for that
+    /// interface, after microvm start.
+    pub fn new(iface_id: String) -> PartialNetworkInterface {
+        PartialNetworkInterface {
+            iface_id,
+            rx_rate_limiter: None,
+            tx_rate_limiter: None,
+        }
+    }
+
+    pub fn set_iface_id(&mut self, iface_id: String) {
+        self.iface_id = iface_id;
+    }
+
+    pub fn with_iface_id(mut self, iface_id: String) -> PartialNetworkInterface {
+        self.iface_id = iface_id;
+        self
+    }
+
+    pub fn iface_id(&self) -> &String {
+        &self.iface_id
+    }
+
+    pub fn set_rx_rate_limiter(&mut self, rx_rate_limiter: RateLimiter) {
+        self.rx_rate_limiter = Some(rx_rate_limiter);
+    }
+
+    pub fn with_rx_rate_limiter(mut self, rx_rate_limiter: RateLimiter) -> PartialNetworkInterface {
+        self.rx_rate_limiter = Some(rx_rate_limiter);
+        self
+    }
+
+    pub fn rx_rate_limiter(&self) -> Option<&RateLimiter> {
+        self.rx_rate_limiter.as_ref()
+    }
+
+    pub fn reset_rx_rate_limiter(&mut self) {
+        self.rx_rate_limiter = None;
+    }
+
+    pub fn set_tx_rate_limiter(&mut self, tx_rate_limiter: RateLimiter) {
+        self.tx_rate_limiter = Some(tx_rate_limiter);
+    }
+
+    pub fn with_tx_rate_limiter(mut self, tx_rate_limiter: RateLimiter) -> PartialNetworkInterface {
+        self.tx_rate_limiter = Some(tx_rate_limiter);
+        self
+    }
+
+    pub fn tx_rate_limiter(&self) -> Option<&RateLimiter> {
+        self.tx_rate_limiter.as_ref()
+    }
+
+    pub fn reset_tx_rate_limiter(&mut self) {
+        self.tx_rate_limiter = None;
+    }
+}
+
+impl ApiClient {
+    /// Add a network interface to the VM.
+    pub async fn add_network_interface(
+        &self,
+        iface_id: &str,
+        iface: &NetworkInterface,
+    ) -> Result<()> {
+        self.put(&format!("/network-interfaces/{iface_id}"), iface)
+            .await
+    }
+
+    /// Update a network interface that is attached to the VM.
+    pub async fn update_network_interface(
+        &self,
+        iface_id: &str,
+        iface: &PartialNetworkInterface,
+    ) -> Result<()> {
+        self.patch(&format!("/network-interfaces/{iface_id}"), iface)
+            .await
     }
 }

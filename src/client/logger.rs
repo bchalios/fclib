@@ -2,6 +2,8 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use super::{ApiClient, Result};
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Logger {
     /// Set the level. The possible values are case-insensitive.
@@ -91,5 +93,11 @@ impl Logger {
 
     pub fn reset_show_log_origin(&mut self) {
         self.show_log_origin = None;
+    }
+}
+
+impl ApiClient {
+    pub async fn config_logger(&self, logger: &Logger) -> Result<()> {
+        self.put("/logger", logger).await
     }
 }
