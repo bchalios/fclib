@@ -8,11 +8,14 @@
 //!
 //! Firecracker allows configuring (optionally) a single balloon device
 
+#[cfg(feature = "clap")]
+use clap::Args;
 use serde_derive::{Deserialize, Serialize};
 
 use super::{ApiClient, Result};
 
 /// Configuration of a Firecracker Balloon device
+#[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Balloon {
     /// Target balloon size in MiB.
@@ -187,6 +190,7 @@ impl BalloonStats {
     }
 }
 
+#[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
 struct BalloonStatsUpdate {
     /// Interval in seconds between refreshing statistics.
@@ -194,6 +198,7 @@ struct BalloonStatsUpdate {
     stats_polling_interval_s: i32,
 }
 
+#[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
 struct BalloonUpdate {
     /// Target balloon size in MiB.
