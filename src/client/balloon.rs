@@ -192,7 +192,7 @@ impl BalloonStats {
 
 #[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
-struct BalloonStatsUpdate {
+pub struct BalloonStatsUpdate {
     /// Interval in seconds between refreshing statistics.
     #[serde(rename = "stats_polling_interval_s")]
     stats_polling_interval_s: i32,
@@ -200,7 +200,7 @@ struct BalloonStatsUpdate {
 
 #[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
-struct BalloonUpdate {
+pub struct BalloonUpdate {
     /// Target balloon size in MiB.
     #[serde(rename = "amount_mib")]
     amount_mib: i32,
