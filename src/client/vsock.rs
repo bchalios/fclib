@@ -6,10 +6,13 @@
 //! to connect to port 52). For guest-initiated connections, Firecracker will expect host
 //! software to be bound and listening on Unix sockets at `uds_path_<PORT>`. E.g.
 //! \"/path/to/host_vsock.sock_52\" for port number 52.
+#[cfg(feature = "clap")]
+use clap::Args;
 use serde_derive::{Deserialize, Serialize};
 
 use super::{ApiClient, Result};
 
+#[cfg_attr(feature = "clap", derive(Args, Clone))]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Vsock {
     /// Guest Vsock CID
