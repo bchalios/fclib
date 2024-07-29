@@ -19,12 +19,6 @@ pub struct SnapshotCreateParams {
     #[cfg_attr(feature = "clap", arg(long, short))]
     #[serde(rename = "snapshot_type")]
     snapshot_type: Option<String>,
-
-    /// The microVM version for which we want to create the snapshot. It is optional and it
-    /// defaults to the current version.
-    #[cfg_attr(feature = "clap", arg(long, short))]
-    #[serde(rename = "version")]
-    version: Option<String>,
 }
 
 impl SnapshotCreateParams {
@@ -33,7 +27,6 @@ impl SnapshotCreateParams {
             mem_file_path,
             snapshot_path,
             snapshot_type: None,
-            version: None,
         }
     }
 
@@ -78,23 +71,6 @@ impl SnapshotCreateParams {
 
     pub fn reset_snapshot_type(&mut self) {
         self.snapshot_type = None;
-    }
-
-    pub fn set_version(&mut self, version: String) {
-        self.version = Some(version);
-    }
-
-    pub fn with_version(mut self, version: String) -> SnapshotCreateParams {
-        self.version = Some(version);
-        self
-    }
-
-    pub fn version(&self) -> Option<&String> {
-        self.version.as_ref()
-    }
-
-    pub fn reset_version(&mut self) {
-        self.version = None;
     }
 }
 
