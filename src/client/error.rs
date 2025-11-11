@@ -1,6 +1,6 @@
 use serde_derive::Deserialize;
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, thiserror::Error, Deserialize, Default)]
 pub struct FcError {
     /// A description of the error condition
     #[serde(rename = "fault_message")]
