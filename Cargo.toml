@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = [
+  "lib/fclib",
+  "cli/fc-ctl"
+]
+
+[workspace.dependencies]
+fclib = { path = "lib/fclib" }
