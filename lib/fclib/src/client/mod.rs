@@ -2,7 +2,6 @@ pub mod balloon;
 pub mod cpu_config;
 pub mod drive;
 pub mod entropy;
-pub mod error;
 pub mod kernel;
 pub mod logger;
 pub mod metrics;
@@ -19,8 +18,25 @@ use log::debug;
 use reqwest::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use reqwest::{Client, ClientBuilder};
 use serde::de::DeserializeOwned;
+use serde::Deserialize;
 
-use crate::client::error::FcError;
+/// Errors returned by Firecracker
+#[derive(Debug, thiserror::Error, Deserialize, Default)]
+pub struct FcError {
+    /// A description of the error condition
+    #[serde(rename = "fault_message")]
+    fault_message: Option<String>,
+}
+
+impl std::fmt::Display for FcError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            self.fault_message.as_ref().unwrap_or(&"".to_owned())
+        )
+    }
+}
 
 #[derive(Debug, thiserror::Error, displaydoc::Display)]
 pub enum FcClientError {

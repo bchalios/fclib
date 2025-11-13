@@ -47,11 +47,14 @@ async fn main() {
 
     println!("Firecracker PID: {}", vmm.pid());
 
-    let mut boot_source = BootSource::new(args.vmlinux_path);
-    boot_source.set_boot_args("console=ttyS0 reboot=k panic=1 pci=off".to_owned());
-    client.set_boot_source(&boot_source).await.unwrap();
+    let kernel = BootSource {
+        kernel_image_path: args.vmlinux_path,
+        boot_args: Some("console=ttyS0 reboot=k panic=1 pci=off".to_owned()),
+        initrd_path: None,
+    };
+    client.set_boot_source(&kernel).await.unwrap();
 
-    let drive = Drive::new("rootfs".to_owned(), false, true, args.rootfs_path);
+    let drive = Drive::new("rootfs".to_string(), args.rootfs_path, true, false);
     client.add_drive("rootfs", &drive).await.unwrap();
 
     client.start_microvm().await.unwrap();

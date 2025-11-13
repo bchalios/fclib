@@ -96,223 +96,48 @@ impl ApiClient {
 pub struct InstanceInfo {
     /// Application name.
     #[serde(rename = "app_name")]
-    app_name: String,
+    pub app_name: String,
     /// MicroVM / instance ID.
     #[serde(rename = "id")]
-    id: String,
+    pub id: String,
     /// The current detailed state (Not started, Running, Paused) of the Firecracker instance. This
     /// value is read-only for the control-plane.
     #[serde(rename = "state")]
-    state: String,
+    pub state: String,
     /// MicroVM hypervisor build version.
     #[serde(rename = "vmm_version")]
-    vmm_version: String,
+    pub vmm_version: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FirecrackerVersion {
     /// Firecracker build version.
     #[serde(rename = "firecracker_version")]
-    firecracker_version: String,
+    pub firecracker_version: String,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct FullVmConfiguration {
     #[serde(rename = "balloon")]
-    balloon: Option<Balloon>,
+    pub balloon: Option<Balloon>,
     /// Configurations for all block devices.
     #[serde(rename = "drives")]
-    drives: Option<Vec<Drive>>,
+    pub drives: Option<Vec<Drive>>,
     #[serde(rename = "boot-source")]
-    boot_source: Option<BootSource>,
+    pub boot_source: Option<BootSource>,
     #[serde(rename = "logger")]
-    logger: Option<Logger>,
+    pub logger: Option<Logger>,
     #[serde(rename = "machine-config")]
-    machine_config: Option<MachineConfiguration>,
+    pub machine_config: Option<MachineConfiguration>,
     #[serde(rename = "metrics")]
-    metrics: Option<Metrics>,
+    pub metrics: Option<Metrics>,
     #[serde(rename = "mmds-config")]
-    mmds_config: Option<MmdsConfig>,
+    pub mmds_config: Option<MmdsConfig>,
     /// Configurations for all net devices.
     #[serde(rename = "network-interfaces")]
-    network_interfaces: Option<Vec<NetworkInterface>>,
+    pub network_interfaces: Option<Vec<NetworkInterface>>,
     #[serde(rename = "vsock")]
-    vsock: Option<Vsock>,
-}
-
-impl FullVmConfiguration {
-    pub fn new() -> FullVmConfiguration {
-        FullVmConfiguration {
-            balloon: None,
-            drives: None,
-            boot_source: None,
-            logger: None,
-            machine_config: None,
-            metrics: None,
-            mmds_config: None,
-            network_interfaces: None,
-            vsock: None,
-        }
-    }
-
-    pub fn set_balloon(&mut self, balloon: Balloon) {
-        self.balloon = Some(balloon);
-    }
-
-    pub fn with_balloon(mut self, balloon: Balloon) -> FullVmConfiguration {
-        self.balloon = Some(balloon);
-        self
-    }
-
-    pub fn balloon(&self) -> Option<&Balloon> {
-        self.balloon.as_ref()
-    }
-
-    pub fn reset_balloon(&mut self) {
-        self.balloon = None;
-    }
-
-    pub fn set_drives(&mut self, drives: Vec<Drive>) {
-        self.drives = Some(drives);
-    }
-
-    pub fn with_drives(mut self, drives: Vec<Drive>) -> FullVmConfiguration {
-        self.drives = Some(drives);
-        self
-    }
-
-    pub fn drives(&self) -> Option<&Vec<Drive>> {
-        self.drives.as_ref()
-    }
-
-    pub fn reset_drives(&mut self) {
-        self.drives = None;
-    }
-
-    pub fn set_boot_source(&mut self, boot_source: BootSource) {
-        self.boot_source = Some(boot_source);
-    }
-
-    pub fn with_boot_source(mut self, boot_source: BootSource) -> FullVmConfiguration {
-        self.boot_source = Some(boot_source);
-        self
-    }
-
-    pub fn boot_source(&self) -> Option<&BootSource> {
-        self.boot_source.as_ref()
-    }
-
-    pub fn reset_boot_source(&mut self) {
-        self.boot_source = None;
-    }
-
-    pub fn set_logger(&mut self, logger: Logger) {
-        self.logger = Some(logger);
-    }
-
-    pub fn with_logger(mut self, logger: Logger) -> FullVmConfiguration {
-        self.logger = Some(logger);
-        self
-    }
-
-    pub fn logger(&self) -> Option<&Logger> {
-        self.logger.as_ref()
-    }
-
-    pub fn reset_logger(&mut self) {
-        self.logger = None;
-    }
-
-    pub fn set_machine_config(&mut self, machine_config: MachineConfiguration) {
-        self.machine_config = Some(machine_config);
-    }
-
-    pub fn with_machine_config(
-        mut self,
-        machine_config: MachineConfiguration,
-    ) -> FullVmConfiguration {
-        self.machine_config = Some(machine_config);
-        self
-    }
-
-    pub fn machine_config(&self) -> Option<&MachineConfiguration> {
-        self.machine_config.as_ref()
-    }
-
-    pub fn reset_machine_config(&mut self) {
-        self.machine_config = None;
-    }
-
-    pub fn set_metrics(&mut self, metrics: Metrics) {
-        self.metrics = Some(metrics);
-    }
-
-    pub fn with_metrics(mut self, metrics: Metrics) -> FullVmConfiguration {
-        self.metrics = Some(metrics);
-        self
-    }
-
-    pub fn metrics(&self) -> Option<&Metrics> {
-        self.metrics.as_ref()
-    }
-
-    pub fn reset_metrics(&mut self) {
-        self.metrics = None;
-    }
-
-    pub fn set_mmds_config(&mut self, mmds_config: MmdsConfig) {
-        self.mmds_config = Some(mmds_config);
-    }
-
-    pub fn with_mmds_config(mut self, mmds_config: MmdsConfig) -> FullVmConfiguration {
-        self.mmds_config = Some(mmds_config);
-        self
-    }
-
-    pub fn mmds_config(&self) -> Option<&MmdsConfig> {
-        self.mmds_config.as_ref()
-    }
-
-    pub fn reset_mmds_config(&mut self) {
-        self.mmds_config = None;
-    }
-
-    pub fn set_network_interfaces(&mut self, network_interfaces: Vec<NetworkInterface>) {
-        self.network_interfaces = Some(network_interfaces);
-    }
-
-    pub fn with_network_interfaces(
-        mut self,
-        network_interfaces: Vec<NetworkInterface>,
-    ) -> FullVmConfiguration {
-        self.network_interfaces = Some(network_interfaces);
-        self
-    }
-
-    pub fn network_interfaces(&self) -> Option<&Vec<NetworkInterface>> {
-        self.network_interfaces.as_ref()
-    }
-
-    pub fn reset_network_interfaces(&mut self) {
-        self.network_interfaces = None;
-    }
-
-    pub fn set_vsock(&mut self, vsock: Vsock) {
-        self.vsock = Some(vsock);
-    }
-
-    pub fn with_vsock(mut self, vsock: Vsock) -> FullVmConfiguration {
-        self.vsock = Some(vsock);
-        self
-    }
-
-    pub fn vsock(&self) -> Option<&Vsock> {
-        self.vsock.as_ref()
-    }
-
-    pub fn reset_vsock(&mut self) {
-        self.vsock = None;
-    }
+    pub vsock: Option<Vsock>,
 }
 
 impl ApiClient {
@@ -349,16 +174,16 @@ pub enum CpuTemplate {
 pub struct MachineConfiguration {
     /// Memory size of VM
     #[serde(rename = "mem_size_mib")]
-    mem_size_mib: i32,
+    pub mem_size_mib: i32,
 
     /// Number of vCPUs (either 1 or an even number)
     #[serde(rename = "vcpu_count")]
-    vcpu_count: i32,
+    pub vcpu_count: i32,
 
     /// Flag for enabling/disabling simultaneous multithreading. Can be enabled only on x86.
     #[cfg_attr(feature = "clap", arg(long, short, default_value = "false"))]
     #[serde(rename = "smt")]
-    smt: Option<bool>,
+    pub smt: Option<bool>,
 
     /// Enable dirty page tracking. If this is enabled, then incremental guest memory snapshots can
     /// be created. These belong to diff snapshots, which contain, besides the microVM state, only
@@ -366,12 +191,12 @@ pub struct MachineConfiguration {
     /// the guest memory.
     #[cfg_attr(feature = "clap", arg(long, short, default_value = "false"))]
     #[serde(rename = "track_dirty_pages")]
-    track_dirty_pages: Option<bool>,
+    pub track_dirty_pages: Option<bool>,
 
     /// CPU template to use.
     #[cfg_attr(feature = "clap", arg(long, short, default_value = "none"))]
     #[serde(rename = "cpu_template")]
-    cpu_template: Option<CpuTemplate>,
+    pub cpu_template: Option<CpuTemplate>,
 }
 
 impl MachineConfiguration {
@@ -384,83 +209,6 @@ impl MachineConfiguration {
             track_dirty_pages: None,
             vcpu_count,
         }
-    }
-
-    pub fn set_cpu_template(&mut self, cpu_template: CpuTemplate) {
-        self.cpu_template = Some(cpu_template);
-    }
-
-    pub fn with_cpu_template(mut self, cpu_template: CpuTemplate) -> MachineConfiguration {
-        self.cpu_template = Some(cpu_template);
-        self
-    }
-
-    pub fn cpu_template(&self) -> Option<&CpuTemplate> {
-        self.cpu_template.as_ref()
-    }
-
-    pub fn reset_cpu_template(&mut self) {
-        self.cpu_template = None;
-    }
-
-    pub fn set_smt(&mut self, smt: bool) {
-        self.smt = Some(smt);
-    }
-
-    pub fn with_smt(mut self, smt: bool) -> MachineConfiguration {
-        self.smt = Some(smt);
-        self
-    }
-
-    pub fn smt(&self) -> Option<&bool> {
-        self.smt.as_ref()
-    }
-
-    pub fn reset_smt(&mut self) {
-        self.smt = None;
-    }
-
-    pub fn set_mem_size_mib(&mut self, mem_size_mib: i32) {
-        self.mem_size_mib = mem_size_mib;
-    }
-
-    pub fn with_mem_size_mib(mut self, mem_size_mib: i32) -> MachineConfiguration {
-        self.mem_size_mib = mem_size_mib;
-        self
-    }
-
-    pub fn mem_size_mib(&self) -> &i32 {
-        &self.mem_size_mib
-    }
-
-    pub fn set_track_dirty_pages(&mut self, track_dirty_pages: bool) {
-        self.track_dirty_pages = Some(track_dirty_pages);
-    }
-
-    pub fn with_track_dirty_pages(mut self, track_dirty_pages: bool) -> MachineConfiguration {
-        self.track_dirty_pages = Some(track_dirty_pages);
-        self
-    }
-
-    pub fn track_dirty_pages(&self) -> Option<&bool> {
-        self.track_dirty_pages.as_ref()
-    }
-
-    pub fn reset_track_dirty_pages(&mut self) {
-        self.track_dirty_pages = None;
-    }
-
-    pub fn set_vcpu_count(&mut self, vcpu_count: i32) {
-        self.vcpu_count = vcpu_count;
-    }
-
-    pub fn with_vcpu_count(mut self, vcpu_count: i32) -> MachineConfiguration {
-        self.vcpu_count = vcpu_count;
-        self
-    }
-
-    pub fn vcpu_count(&self) -> &i32 {
-        &self.vcpu_count
     }
 }
 

@@ -67,20 +67,20 @@ impl WithNetRateLimiterConf for PartialNetworkInterface {
 
 impl NetRateLimiterConf {
     fn parse_rate_limiters(&self, net: &mut dyn WithNetRateLimiterConf) -> Result<()> {
-        let mut rate_limiter = RateLimiter::new();
+        let mut rate_limiter = RateLimiter::default();
         if let Some(ops) = &self.tx_rate_limiter.tx_ops {
-            rate_limiter.set_ops(RateLimiterConf::parse_token_bucket(ops));
+            rate_limiter.ops = Some(RateLimiterConf::parse_token_bucket(ops));
         }
         if let Some(bw) = &self.tx_rate_limiter.tx_bw {
-            rate_limiter.set_bandwidth(RateLimiterConf::parse_token_bucket(bw));
+            rate_limiter.bandwidth = Some(RateLimiterConf::parse_token_bucket(bw));
         }
         net.set_tx_rate_limiter(rate_limiter.clone());
 
         if let Some(ops) = &self.rx_rate_limiter.rx_ops {
-            rate_limiter.set_ops(RateLimiterConf::parse_token_bucket(ops));
+            rate_limiter.ops = Some(RateLimiterConf::parse_token_bucket(ops));
         }
         if let Some(bw) = &self.rx_rate_limiter.rx_bw {
-            rate_limiter.set_bandwidth(RateLimiterConf::parse_token_bucket(bw));
+            rate_limiter.bandwidth = Some(RateLimiterConf::parse_token_bucket(bw));
         }
         net.set_rx_rate_limiter(rate_limiter);
 
@@ -119,12 +119,12 @@ impl NetCommand {
             Self::Add(mut net) => {
                 let n = &mut net.net;
                 net.rate_limiter.parse_rate_limiters(n)?;
-                api_client.add_network_interface(n.iface_id(), n).await?;
+                api_client.add_network_interface(&n.iface_id, n).await?;
             }
             Self::Update(mut net) => {
                 let n = &mut net.net;
                 net.rate_limiter.parse_rate_limiters(n)?;
-                api_client.update_network_interface(n.iface_id(), n).await?;
+                api_client.update_network_interface(&n.iface_id, n).await?;
             }
         }
 

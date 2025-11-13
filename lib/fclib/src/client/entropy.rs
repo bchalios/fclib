@@ -8,31 +8,7 @@ use super::{ApiClient, Result};
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct EntropyDevice {
     #[serde(rename = "rate_limiter")]
-    rate_limiter: Option<RateLimiter>,
-}
-
-impl EntropyDevice {
-    /// Defines an entropy device.
-    pub fn new() -> EntropyDevice {
-        EntropyDevice { rate_limiter: None }
-    }
-
-    pub fn set_rate_limiter(&mut self, rate_limiter: RateLimiter) {
-        self.rate_limiter = Some(rate_limiter);
-    }
-
-    pub fn with_rate_limiter(mut self, rate_limiter: RateLimiter) -> EntropyDevice {
-        self.rate_limiter = Some(rate_limiter);
-        self
-    }
-
-    pub fn rate_limiter(&self) -> Option<&RateLimiter> {
-        self.rate_limiter.as_ref()
-    }
-
-    pub fn reset_rate_limiter(&mut self) {
-        self.rate_limiter = None;
-    }
+    pub rate_limiter: Option<RateLimiter>,
 }
 
 impl ApiClient {

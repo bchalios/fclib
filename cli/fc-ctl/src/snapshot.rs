@@ -39,7 +39,7 @@ impl SnapshotCmd {
             }
             SnapshotCmd::Load(params) => {
                 api_client.load_microvm_snapshot(params).await?;
-                if params.enabled_resume_vm() {
+                if params.resume_vm {
                     api_client.resume_microvm().await?;
                 }
             }

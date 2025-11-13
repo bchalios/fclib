@@ -22,18 +22,18 @@ impl RateLimiterConf {
     pub(crate) fn parse_token_bucket(args: &[i64]) -> TokenBucket {
         let mut bucket = TokenBucket::new(args[0], args[1]);
         if args.len() == 3 {
-            bucket.set_one_time_burst(args[2]);
+            bucket.one_time_burst = Some(args[2]);
         }
 
         bucket
     }
     pub(crate) fn parse_rate_limiter(&self, dev: &mut dyn WithRateLimiterConf) {
-        let mut rate_limiter = RateLimiter::new();
+        let mut rate_limiter = RateLimiter::default();
         if let Some(ops) = &self.ops {
-            rate_limiter.set_ops(Self::parse_token_bucket(ops));
+            rate_limiter.ops = Some(Self::parse_token_bucket(ops));
         }
         if let Some(bw) = &self.bw {
-            rate_limiter.set_bandwidth(Self::parse_token_bucket(bw));
+            rate_limiter.bandwidth = Some(Self::parse_token_bucket(bw));
         }
 
         dev.set_rate_limiter(rate_limiter);

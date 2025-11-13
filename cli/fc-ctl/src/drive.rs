@@ -33,13 +33,13 @@ pub(crate) enum DriveCmd {
 
 impl WithRateLimiterConf for Drive {
     fn set_rate_limiter(&mut self, rate_limiter: RateLimiter) {
-        Drive::set_rate_limiter(self, rate_limiter);
+        self.rate_limiter = Some(rate_limiter);
     }
 }
 
 impl WithRateLimiterConf for PartialDrive {
     fn set_rate_limiter(&mut self, rate_limiter: RateLimiter) {
-        PartialDrive::set_rate_limiter(self, rate_limiter);
+        self.rate_limiter = Some(rate_limiter);
     }
 }
 
@@ -49,12 +49,12 @@ impl DriveCmd {
             DriveCmd::Add(mut drive) => {
                 let d = &mut drive.drive;
                 drive.rate_limiter.parse_rate_limiter(d);
-                api_client.add_drive(d.drive_id(), d).await?;
+                api_client.add_drive(&d.drive_id, d).await?;
             }
             DriveCmd::Update(mut drive) => {
                 let d = &mut drive.drive;
                 drive.rate_limiter.parse_rate_limiter(d);
-                api_client.update_drive(d.drive_id(), d).await?;
+                api_client.update_drive(&d.drive_id, d).await?;
             }
         }
 

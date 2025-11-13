@@ -15,12 +15,12 @@ pub(crate) struct EntropyArgs {
 
 impl WithRateLimiterConf for EntropyDevice {
     fn set_rate_limiter(&mut self, rate_limiter: RateLimiter) {
-        EntropyDevice::set_rate_limiter(self, rate_limiter);
+        self.rate_limiter = Some(rate_limiter);
     }
 }
 
 pub(crate) async fn parse(api_client: &mut ApiClient, args: &EntropyArgs) -> Result<()> {
-    let mut entropy = EntropyDevice::new();
+    let mut entropy = EntropyDevice::default();
     args.rate_limiter.parse_rate_limiter(&mut entropy);
     api_client.configure_entropy_device(&entropy).await?;
     Ok(())
