@@ -24,7 +24,6 @@ use serde::Deserialize;
 #[derive(Debug, thiserror::Error, Deserialize, Default)]
 pub struct FcError {
     /// A description of the error condition
-    #[serde(rename = "fault_message")]
     fault_message: Option<String>,
 }
 

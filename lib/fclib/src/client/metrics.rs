@@ -7,7 +7,6 @@ use super::{ApiClient, Result};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Metrics {
     /// Path to the named pipe or file where the JSON-formatted metrics are flushed.
-    #[serde(rename = "metrics_path")]
     pub metrics_path: String,
 }
 

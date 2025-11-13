@@ -7,7 +7,6 @@ use super::{ApiClient, Result};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct EntropyDevice {
-    #[serde(rename = "rate_limiter")]
     pub rate_limiter: Option<RateLimiter>,
 }
 

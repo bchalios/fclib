@@ -45,19 +45,16 @@ pub enum IoEngine {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Drive {
     /// Id of the drive.
-    #[serde(rename = "drive_id")]
     pub drive_id: String,
 
     /// Path to the drive in the host filesystem. If the path is not absolute it will be relative
     /// to the Firecracker process's current working directory.
-    #[serde(rename = "path_on_host")]
     pub path_on_host: String,
 
     /// Type of the IO engine used by the device. "Async" is supported on host kernels newer than
     /// 5.10.51.
     /// Host level path for the guest drive
     #[cfg_attr(feature = "clap", arg(long, required = false, default_value = "sync"))]
-    #[serde(rename = "io_engine")]
     pub io_engine: IoEngine,
 
     /// Represents the caching strategy for the block device.
@@ -65,27 +62,22 @@ pub struct Drive {
         feature = "clap",
         arg(long, short, required = false, default_value = "unsafe")
     )]
-    #[serde(rename = "cache_type")]
     pub cache_type: CacheType,
 
     /// The drive is read-only.
     #[cfg_attr(feature = "clap", arg(long))]
-    #[serde(rename = "is_read_only")]
     pub is_read_only: bool,
 
     /// The drive contains the root file system of the microVM.
     #[cfg_attr(feature = "clap", arg(long))]
-    #[serde(rename = "is_root_device")]
     pub is_root_device: bool,
 
     #[cfg_attr(feature = "clap", clap(skip))]
-    #[serde(rename = "rate_limiter")]
     pub rate_limiter: Option<RateLimiter>,
 
     /// Represents the unique id of the boot partition of this device. It is optional and it will
     /// be taken into account only if the is_root_device field is true.
     #[cfg_attr(feature = "clap", arg(short, long))]
-    #[serde(rename = "partuuid")]
     pub partuuid: Option<String>,
 }
 
@@ -115,17 +107,14 @@ impl Drive {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PartialDrive {
     /// Id of the drive to udate
-    #[serde(rename = "drive_id")]
     pub drive_id: String,
 
     /// Host level path for the file backing the guest drive
     #[cfg_attr(feature = "clap", arg(long, short))]
-    #[serde(rename = "path_on_host")]
     pub path_on_host: Option<String>,
 
     /// Rate limiter configuration
     #[cfg_attr(feature = "clap", clap(skip))]
-    #[serde(rename = "rate_limiter")]
     pub rate_limiter: Option<RateLimiter>,
 }
 

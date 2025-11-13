@@ -10,13 +10,10 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TokenBucket {
     /// The initial size of a token bucket.
-    #[serde(rename = "one_time_burst")]
     pub one_time_burst: Option<i64>,
     /// The amount of milliseconds it takes for the bucket to refill.
-    #[serde(rename = "refill_time")]
     pub refill_time: i64,
     /// The total number of tokens this bucket can hold.
-    #[serde(rename = "size")]
     pub size: i64,
 }
 
@@ -36,9 +33,7 @@ impl TokenBucket {
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
 pub struct RateLimiter {
     /// Token bucket with bytes as tokens
-    #[serde(rename = "bandwidth")]
     pub bandwidth: Option<TokenBucket>,
     /// Token bucket with operations as tokens
-    #[serde(rename = "ops")]
     pub ops: Option<TokenBucket>,
 }

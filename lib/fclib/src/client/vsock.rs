@@ -16,13 +16,10 @@ use super::{ApiClient, Result};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Vsock {
     /// Guest Vsock CID
-    #[serde(rename = "guest_cid")]
     pub guest_cid: i32,
     /// Path to UNIX domain socket, used to proxy vsock connections.
-    #[serde(rename = "uds_path")]
     pub uds_path: String,
     /// This parameter has been deprecated since v1.0.0.
-    #[serde(rename = "vsock_id")]
     pub vsock_id: Option<String>,
 }
 

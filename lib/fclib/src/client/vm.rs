@@ -27,7 +27,6 @@ enum InstanceAction {
 #[derive(Debug, Serialize, Deserialize)]
 struct InstanceActionInfo {
     /// Enumeration indicating what type of action is contained in the payload
-    #[serde(rename = "action_type")]
     action_type: InstanceAction,
 }
 
@@ -68,7 +67,6 @@ enum VmState {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Vm {
-    #[serde(rename = "state")]
     state: VmState,
 }
 
@@ -95,48 +93,34 @@ impl ApiClient {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InstanceInfo {
     /// Application name.
-    #[serde(rename = "app_name")]
     pub app_name: String,
     /// MicroVM / instance ID.
-    #[serde(rename = "id")]
     pub id: String,
     /// The current detailed state (Not started, Running, Paused) of the Firecracker instance. This
     /// value is read-only for the control-plane.
-    #[serde(rename = "state")]
     pub state: String,
     /// MicroVM hypervisor build version.
-    #[serde(rename = "vmm_version")]
     pub vmm_version: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FirecrackerVersion {
     /// Firecracker build version.
-    #[serde(rename = "firecracker_version")]
     pub firecracker_version: String,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct FullVmConfiguration {
-    #[serde(rename = "balloon")]
     pub balloon: Option<Balloon>,
     /// Configurations for all block devices.
-    #[serde(rename = "drives")]
     pub drives: Option<Vec<Drive>>,
-    #[serde(rename = "boot-source")]
     pub boot_source: Option<BootSource>,
-    #[serde(rename = "logger")]
     pub logger: Option<Logger>,
-    #[serde(rename = "machine-config")]
     pub machine_config: Option<MachineConfiguration>,
-    #[serde(rename = "metrics")]
     pub metrics: Option<Metrics>,
-    #[serde(rename = "mmds-config")]
     pub mmds_config: Option<MmdsConfig>,
     /// Configurations for all net devices.
-    #[serde(rename = "network-interfaces")]
     pub network_interfaces: Option<Vec<NetworkInterface>>,
-    #[serde(rename = "vsock")]
     pub vsock: Option<Vsock>,
 }
 
@@ -173,16 +157,13 @@ pub enum CpuTemplate {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MachineConfiguration {
     /// Memory size of VM
-    #[serde(rename = "mem_size_mib")]
     pub mem_size_mib: i32,
 
     /// Number of vCPUs (either 1 or an even number)
-    #[serde(rename = "vcpu_count")]
     pub vcpu_count: i32,
 
     /// Flag for enabling/disabling simultaneous multithreading. Can be enabled only on x86.
     #[cfg_attr(feature = "clap", arg(long, short, default_value = "false"))]
-    #[serde(rename = "smt")]
     pub smt: Option<bool>,
 
     /// Enable dirty page tracking. If this is enabled, then incremental guest memory snapshots can
@@ -190,12 +171,10 @@ pub struct MachineConfiguration {
     /// the memory dirtied since a previous snapshot. Full snapshots each contain a full copy of
     /// the guest memory.
     #[cfg_attr(feature = "clap", arg(long, short, default_value = "false"))]
-    #[serde(rename = "track_dirty_pages")]
     pub track_dirty_pages: Option<bool>,
 
     /// CPU template to use.
     #[cfg_attr(feature = "clap", arg(long, short, default_value = "none"))]
-    #[serde(rename = "cpu_template")]
     pub cpu_template: Option<CpuTemplate>,
 }
 

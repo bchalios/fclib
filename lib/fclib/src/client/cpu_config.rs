@@ -9,13 +9,10 @@ use super::{ApiClient, Result};
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct CpuConfig {
     /// A collection of CPUIDs to be modified. (x86_64)
-    #[serde(rename = "cpuid_modifiers")]
     pub cpuid_modifiers: Option<Value>,
     /// A collection of model specific registers to be modified. (x86_64)
-    #[serde(rename = "msr_modifiers")]
     pub msr_modifiers: Option<Value>,
     /// A collection of registers to be modified. (aarch64)
-    #[serde(rename = "reg_modifiers")]
     pub reg_modifiers: Option<Value>,
 }
 

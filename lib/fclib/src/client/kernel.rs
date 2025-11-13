@@ -10,15 +10,12 @@ use super::{ApiClient, Result};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BootSource {
     /// Host level path to the kernel image used to boot the guest
-    #[serde(rename = "kernel_image_path")]
     pub kernel_image_path: String,
     /// Kernel boot arguments
     #[cfg_attr(feature = "clap", arg(long, short))]
-    #[serde(rename = "boot_args")]
     pub boot_args: Option<String>,
     /// Host level path to the initrd image used to boot the guest
     #[cfg_attr(feature = "clap", arg(long, short))]
-    #[serde(rename = "initrd_path")]
     pub initrd_path: Option<String>,
 }
 

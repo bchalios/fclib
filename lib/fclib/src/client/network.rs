@@ -10,22 +10,17 @@ use super::{ApiClient, Result};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NetworkInterface {
     /// ID of the network interface
-    #[serde(rename = "iface_id")]
     pub iface_id: String,
     /// Host level path for the guest network interface
-    #[serde(rename = "host_dev_name")]
     pub host_dev_name: String,
     /// MAC address to use for the interface inside the guest
     #[cfg_attr(feature = "clap", arg(long, short))]
-    #[serde(rename = "guest_mac")]
     pub guest_mac: Option<String>,
 
     #[cfg_attr(feature = "clap", clap(skip))]
-    #[serde(rename = "rx_rate_limiter")]
     pub rx_rate_limiter: Option<RateLimiter>,
 
     #[cfg_attr(feature = "clap", clap(skip))]
-    #[serde(rename = "tx_rate_limiter")]
     pub tx_rate_limiter: Option<RateLimiter>,
 }
 
@@ -47,13 +42,10 @@ impl NetworkInterface {
 #[cfg_attr(feature = "clap", derive(Args))]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PartialNetworkInterface {
-    #[serde(rename = "iface_id")]
     pub iface_id: String,
     #[cfg_attr(feature = "clap", clap(skip))]
-    #[serde(rename = "rx_rate_limiter")]
     pub rx_rate_limiter: Option<RateLimiter>,
     #[cfg_attr(feature = "clap", clap(skip))]
-    #[serde(rename = "tx_rate_limiter")]
     pub tx_rate_limiter: Option<RateLimiter>,
 }
 

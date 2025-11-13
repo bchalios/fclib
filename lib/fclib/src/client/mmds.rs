@@ -7,17 +7,14 @@ use super::{ApiClient, Result};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MmdsConfig {
     /// Enumeration indicating the MMDS version to be configured.
-    #[serde(rename = "version")]
     pub version: Option<String>,
     /// List of the network interface IDs capable of forwarding packets to the MMDS. Network
     /// interface IDs mentioned must be valid at the time of this request. The net device model
     /// will reply to HTTP GET requests sent to the MMDS address via the interfaces mentioned. In
     /// this case, both ARP requests and TCP segments heading to `ipv4_address` are intercepted by
     /// the device model, and do not reach the associated TAP device.
-    #[serde(rename = "network_interfaces")]
     pub network_interfaces: Vec<String>,
     /// A valid IPv4 link-local address.
-    #[serde(rename = "ipv4_address")]
     pub ipv4_address: Option<String>,
 }
 

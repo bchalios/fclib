@@ -16,16 +16,13 @@ pub enum SnapshotType {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SnapshotCreateParams {
     /// Path to the file that will contain the guest memory.
-    #[serde(rename = "mem_file_path")]
     pub mem_file_path: String,
 
     /// Path to the file that will contain the microVM state.
-    #[serde(rename = "snapshot_path")]
     pub snapshot_path: String,
 
     /// Type of snapshot to create. It is optional and by default, a full snapshot is created.
     #[cfg_attr(feature = "clap", arg(long, short))]
-    #[serde(rename = "snapshot_type")]
     pub snapshot_type: SnapshotType,
 }
 
@@ -50,13 +47,11 @@ pub enum MemoryBackendType {
 #[cfg_attr(feature = "clap", derive(Args))]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MemoryBackend {
-    #[serde(rename = "backend_type")]
     pub backend_type: MemoryBackendType,
     /// Based on 'backend_type' it is either 1) Path to the file that contains the guest memory to
     /// be loaded 2) Path to the UDS where a process is listening for a UFFD initialization control
     /// payload and open file descriptor that it can use to serve this process's guest memory page
     /// faults
-    #[serde(rename = "backend_path")]
     pub backend_path: String,
 }
 
@@ -66,24 +61,20 @@ pub struct MemoryBackend {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SnapshotLoadParams {
     /// Path to the file that contains the microVM state to be loaded.
-    #[serde(rename = "snapshot_path")]
     pub snapshot_path: String,
 
     /// Configuration for the backend that handles memory load. If this field is specified,
     /// `mem_file_path` is forbidden. Either `mem_backend` or `mem_file_path` must be present at a
     /// time.
     #[cfg_attr(feature = "clap", clap(flatten))]
-    #[serde(rename = "mem_backend")]
     pub mem_backend: MemoryBackend,
 
     /// When set to true, the vm is also resumed if the snapshot load is successful.
     #[cfg_attr(feature = "clap", arg(long, short, required = false))]
-    #[serde(rename = "resume_vm")]
     pub resume_vm: bool,
 
     /// Enable support for incremental (diff) snapshots by tracking dirty guest pages.
     #[cfg_attr(feature = "clap", arg(long, short, required = false))]
-    #[serde(rename = "enable_diff_snapshots")]
     pub enable_diff_snapshots: bool,
 }
 
