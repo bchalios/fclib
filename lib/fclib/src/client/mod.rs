@@ -109,7 +109,7 @@ impl ApiClient {
 
         let response = self
             .client
-            .patch(path)
+            .patch(self.url(path))
             .header(CONTENT_TYPE, "json")
             .header(CONTENT_LENGTH, serialized.len())
             .body(serialized)

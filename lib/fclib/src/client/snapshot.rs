@@ -22,7 +22,7 @@ pub struct SnapshotCreateParams {
     pub snapshot_path: String,
 
     /// Type of snapshot to create. It is optional and by default, a full snapshot is created.
-    #[cfg_attr(feature = "clap", arg(long, short))]
+    #[cfg_attr(feature = "clap", arg(long, short, default_value = "full"))]
     pub snapshot_type: SnapshotType,
 }
 
