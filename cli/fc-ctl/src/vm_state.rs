@@ -9,6 +9,9 @@ pub(crate) enum VmStateCmd {
     /// Start the microVM
     Start,
     /// Shutdown the microVM
+    ///
+    /// Stopping a microVM is only supported on x86 systems
+    #[cfg(target_arch = "x86_64")]
     Shutdown,
     /// Pause microVMs vCPUs
     Pause,
@@ -20,6 +23,8 @@ impl VmStateCmd {
     pub(crate) async fn parse(&self, api_client: &ApiClient) -> Result<()> {
         match self {
             VmStateCmd::Start => api_client.start_microvm().await?,
+            // Stopping a microVM is only supported on x86 systems
+            #[cfg(target_arch = "x86_64")]
             VmStateCmd::Shutdown => api_client.stop_microvm().await?,
             VmStateCmd::Pause => api_client.pause_microvm().await?,
             VmStateCmd::Resume => api_client.resume_microvm().await?,
